@@ -29,7 +29,8 @@ jobs:
         # Do not report on vulnerabilities that do not have a fix yet
         ignore-unfixed: true
         # Display results in a table format in the logs
-        format: 'html'
+        format: 'template'
+        template: './trivy.tpl'
         output: 'trivy-results.html'
         # output: 'trivy-results.sarif'
     - name: Post Trivy result as PR comment
