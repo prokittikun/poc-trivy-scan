@@ -38,20 +38,24 @@ jobs:
       with:
         name: trivy-results
         path: trivy-results.html
-        
-    - name: Convert HTML to Markdown and post as PR comment
+
+    - name: Post Trivy result as PR comment (Markdown table)
       uses: actions/github-script@v6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const fs = require('fs');
-          const TurndownService = require('turndown');
-          const turndownService = new TurndownService();
+          let html = fs.readFileSync('trivy-results.html', 'utf8');
 
-          const html = fs.readFileSync('trivy-results.html', 'utf8');
-          const markdown = turndownService.turndown(html);
+          // แปลง <table> HTML เป็น Markdown table แบบง่าย ๆ
+          html = html.replace(/<thead>|<\/thead>|<tbody>|<\/tbody>/g, '')
+                     .replace(/<tr>/g, '|')
+                     .replace(/<\/tr>/g, '|\n')
+                     .replace(/<t[dh]>(.*?)<\/t[dh]>/g, '$1|')
+                     .replace(/<[^>]+>/g, '') // ลบ tag อื่น ๆ
+                     .replace(/\n\s*\n/g, '\n'); // ลบบรรทัดว่างเกิน
 
-          const body = `### Trivy Scan Results\n\n${markdown}`;
+          const body = `### Trivy Scan Results\n\n${html}`;
 
           github.rest.issues.createComment({
             owner: context.repo.owner,
