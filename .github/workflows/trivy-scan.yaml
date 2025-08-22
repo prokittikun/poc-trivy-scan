@@ -32,6 +32,13 @@ jobs:
         format: 'table'
         output: 'trivy-results.txt'
         # output: 'trivy-results.sarif'
+    - name: Check if trivy-results.txt exists
+      run: |
+        if [ -f trivy-results.txt ]; then
+          echo "✅ File exists"
+        else
+          echo "❌ File not found"
+        fi
     - name: Post Trivy result as PR comment
       uses: actions/github-script@v6
       with:
@@ -45,3 +52,11 @@ jobs:
             issue_number: context.issue.number,
             body: "### Trivy Scan Results\n" + "```\n" + body + "\n```"
           });
+    - name: Check if trivy-results.txt exists
+      run: |
+        if [ -f trivy-results.txt ]; then
+          echo "✅ File exists"
+        else
+          echo "❌ File not found"
+        fi
+
