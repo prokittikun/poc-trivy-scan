@@ -33,16 +33,8 @@ jobs:
         template: 'trivy.tpl'
         output: 'trivy-results.html'
         # output: 'trivy-results.sarif'
-    - name: Post Trivy result as PR comment
-      uses: actions/github-script@v6
+    - name: Upload scan result
+      uses: actions/upload-artifact@v4
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const fs = require('fs');
-          const body = fs.readFileSync('trivy-results.html', 'utf8'); 
-          github.rest.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: context.issue.number,
-            body: "### Trivy Scan Results\n" + "```\n" + body + "\n```"
-          });
+        name: trivy-results
+        path: trivy-results.html
