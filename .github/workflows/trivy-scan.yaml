@@ -29,8 +29,8 @@ jobs:
         # Do not report on vulnerabilities that do not have a fix yet
         ignore-unfixed: true
         # Display results in a table format in the logs
-        format: 'table'
-        output: 'trivy-results.txt'
+        format: 'html'
+        output: 'trivy-results.html'
         # output: 'trivy-results.sarif'
     - name: Post Trivy result as PR comment
       uses: actions/github-script@v6
@@ -38,7 +38,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const fs = require('fs');
-          const body = fs.readFileSync('trivy-results.txt', 'utf8'); 
+          const body = fs.readFileSync('trivy-results.html', 'utf8'); 
           github.rest.issues.createComment({
             owner: context.repo.owner,
             repo: context.repo.repo,
