@@ -45,3 +45,8 @@ jobs:
             issue_number: context.issue.number,
             body: "### Trivy Scan Results\n" + "```\n" + body + "\n```"
           });
+    - name: Upload scan result
+      uses: actions/upload-artifact@v4
+      with:
+        name: trivy-results
+        path: trivy-results.txt
