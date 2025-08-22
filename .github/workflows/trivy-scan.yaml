@@ -30,7 +30,7 @@ jobs:
         ignore-unfixed: true
         # Display results in a table format in the logs
         format: 'template'
-        template: '@/trivy.tpl'
+        template: './trivy.tpl'
         output: 'trivy-results.html'
         # output: 'trivy-results.sarif'
     - name: Upload scan result
