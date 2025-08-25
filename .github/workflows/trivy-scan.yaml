@@ -38,16 +38,11 @@ jobs:
       with:
         name: trivy-results
         path: trivy-results.html
-    - name: Read HTML report
-      id: read_html
-      run: |
-        CONTENT=$(cat trivy-results.html)
-        echo "html_output=$CONTENT" >> $GITHUB_OUTPUT
-
-    # Post as PR comment
-    - name: Create or update PR comment
+    - name: Post PR comment with link
       uses: peter-evans/create-or-update-comment@v3
       with:
         issue-number: ${{ github.event.pull_request.number }}
-        body: ${{ steps.read_html.outputs.html_output }}
+        body: |
+          🔎 Trivy scan completed.  
+          📄 [View full HTML report](https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts)
     
