@@ -42,10 +42,10 @@ jobs:
       id: read_html
       run: |
         CONTENT=$(cat trivy-results.html)
-        # escape % and newlines for GitHub output
-        CONTENT="${CONTENT//'%'/'%25'}"
-        CONTENT="${CONTENT//$'\n'/'%0A'}"
-        CONTENT="${CONTENT//$'\r'/'%0D'}"
+        # # escape % and newlines for GitHub output
+        # CONTENT="${CONTENT//'%'/'%25'}"
+        # CONTENT="${CONTENT//$'\n'/'%0A'}"
+        # CONTENT="${CONTENT//$'\r'/'%0D'}"
         echo "html_output=$CONTENT" >> $GITHUB_OUTPUT
 
     # Post as PR comment
