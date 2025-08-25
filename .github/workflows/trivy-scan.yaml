@@ -45,7 +45,7 @@ jobs:
         CONTENT=$(cat trivy-results.html)
         # escape % and newlines for GitHub output
         CONTENT="${CONTENT//'%'/' '}"
-        CONTENT="${CONTENT//$'\n'/' '}"
+        CONTENT="${CONTENT//$'\n'/'\'}"
         CONTENT="${CONTENT//$'\r'/' '}"
         echo "html_output=$CONTENT" >> $GITHUB_OUTPUT
 
