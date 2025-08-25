@@ -42,7 +42,8 @@ jobs:
     - name: Read HTML report
       id: read_html
       run: |
-        sed -i 's|<head>.*</head>|<head></head>|I' trivy-results.html
+        perl -0777 -pe 's|<head>.*?</head>|<head></head>|is' trivy-results.html > cleaned.html
+        mv cleaned.html trivy-results.html
         CONTENT=$(cat trivy-results.html)
         # escape % and newlines for GitHub output
         CONTENT="${CONTENT//'%'/' '}"
