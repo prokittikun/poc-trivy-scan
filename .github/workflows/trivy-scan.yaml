@@ -42,12 +42,8 @@ jobs:
     - name: Read HTML report
       id: read_html
       run: |
-        CONTENT=$(cat trivy-results.html)
-        # escape % and newlines for GitHub output
-        CONTENT="${CONTENT//'%'/' '}"
-        CONTENT="${CONTENT//$'\n'/'&nbsp;'}"
-        CONTENT="${CONTENT//$'\r'/' '}"
-        echo "html_output=$CONTENT" >> $GITHUB_OUTPUT
+        CONTENT=$(sed '/<head>/,/<\\/head>/c\\<head><\\/head>' trivy-results.html | sed ':a;N;$!ba;s/\\n//g')
+       
 
     # Post as PR comment
     - name: Create or update PR comment
