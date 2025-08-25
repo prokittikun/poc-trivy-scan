@@ -31,29 +31,32 @@ jobs:
         # Display results in a table format in the logs
         format: 'template'
         template: '@contrib/html.tpl'
-        output: 'trivy-results.html'
+        output: 'trivy-results.md'
         # output: 'trivy-results.sarif'
     - name: Upload scan result
       uses: actions/upload-artifact@v4
       with:
         name: trivy-results
-        path: trivy-results.html
+        path: trivy-results.md
 
-    - name: Read HTML report (multiline-safe)
-      id: read_html
-      run: |
-        {
-          echo 'html_output<<EOF'
-          cat trivy-results.html
-          echo 'EOF'
-        } >> "$GITHUB_OUTPUT"
-
+    - name: Read scan report
+      id: trivy_report
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const report = fs.readFileSync('trivy-results.md', 'utf8');
+          const output = `### Trivy Vulnerability Scan Results\n\n${report}`;
+          return output;
+          
     - name: Create or update PR comment
       uses: peter-evans/create-or-update-comment@v3
       with:
         issue-number: ${{ github.event.pull_request.number }}
-        body: ${{ steps.read_html.outputs.html_output }}
-    #     - name: Read HTML report
+        # Key Change #4: Use the simplified output
+        body: ${{ steps.trivy_report.outputs.result }}
+
+    # - name: Read HTML report
     #   id: read_html
     #   run: |
     #     CONTENT=$(cat trivy-results.html)
