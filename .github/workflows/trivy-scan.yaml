@@ -38,15 +38,13 @@ jobs:
       with:
         name: trivy-results
         path: trivy-results.html
+
     - name: Read HTML report (multiline-safe)
       id: read_html
-      shell: bash
       run: |
-        {
-          echo 'html_output<<EOF'
-          cat trivy-results.html
-          echo 'EOF'
-        } >> "$GITHUB_OUTPUT"
+        echo "html_output<<EOF" >> $GITHUB_OUTPUT
+        cat trivy-results.html >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
 
     - name: Create or update PR comment
       uses: peter-evans/create-or-update-comment@v3
