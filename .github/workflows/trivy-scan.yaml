@@ -38,32 +38,10 @@ jobs:
       with:
         name: trivy-results
         path: trivy-results.html
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
+    - name: HTML Preview
+      id: html_preview
+      uses: pavi2410/html-preview-action@v4
       with:
-        node-version: '20'
-
-    - name: Install dependencies
-      run: npm install turndown
-
-    - name: Convert HTML to Markdown and post as PR comment
-      uses: actions/github-script@v6
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const fs = require('fs');
-          const TurndownService = require('turndown');
-          const turndownService = new TurndownService();
-
-          const html = fs.readFileSync('trivy-results.html', 'utf8');
-          const markdown = turndownService.turndown(html);
-
-          const body = `### Trivy Scan Results\n\n${markdown}`;
-
-          github.rest.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: context.issue.number,
-            body: body
-          });
+        html_file: 'trivy-results.html'
+        job_summary: true
+    
