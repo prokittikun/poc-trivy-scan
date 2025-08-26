@@ -53,8 +53,11 @@ jobs:
     
     - name: Convert UTC to ICT
       run: |
-        REPORT_DATE=$(date -d "$(grep -oP '(?<=Trivy Report - ).*' trivy-results.html | head -1)" '+%Y-%m-%d %H:%M:%S ICT')
-        sed -i "s/Trivy Report - .*/Trivy Report - $REPORT_DATE/" trivy-results.html
+        # ดึงแค่ datetime ก่อน timezone
+        RAW_DATE=$(grep -oP '(?<=Trivy Report - ).*' trivy-results.html | head -1 | awk '{print $1" "$2}')
+        REPORT_DATE=$(date -d "$RAW_DATE UTC" '+%Y-%m-%d %H:%M:%S ICT')
+        echo "Converted: $REPORT_DATE"
+        sed -i "s/Trivy Report - .*/Trivy Report - $REPORT_DATE<\/h1>/" trivy-results.html
 
     # Post as PR comment
     - name: Create or update PR comment
