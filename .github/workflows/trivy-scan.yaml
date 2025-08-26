@@ -52,14 +52,6 @@ jobs:
         CONTENT="${CONTENT//$'\n'/'&nbsp;'}"
         CONTENT="${CONTENT//$'\r'/' '}"
         echo "html_output=$CONTENT" >> $GITHUB_OUTPUT
-    
-    - name: Convert UTC to ICT
-      run: |
-        # ดึงแค่ datetime ก่อน timezone
-        RAW_DATE=$(grep -oP '(?<=Trivy Report - ).*' trivy-results.html | head -1 | awk '{print $1" "$2}')
-        REPORT_DATE=$(date -d "$RAW_DATE UTC" '+%Y-%m-%d %H:%M:%S ICT')
-        echo "Converted: $REPORT_DATE"
-        sed -i "s/Trivy Report - .*/Trivy Report - $REPORT_DATE<\/h1>/" trivy-results.html
 
     # Post as PR comment
     - name: Create or update PR comment
