@@ -32,7 +32,7 @@ jobs:
         ignore-unfixed: true
         # Display results in a table format in the logs
         format: 'template'
-        template: '@test/test.tpl'
+        template: '@.github/tpl/test.tpl'
         output: 'trivy-results.html'
         # output: 'trivy-results.sarif'
     - name: Upload scan result
