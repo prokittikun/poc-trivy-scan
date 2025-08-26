@@ -82,9 +82,14 @@
     </script>
   </head>
   <body>
-    <h1>
-    {{- escapeXML ( index . 0 ).Target }} - Trivy Report
-    </h1><h2>Generated at: {{ now.Format "2006-01-02 15:04" }} (Asia/Bangkok)</h2>
+    <ul style="list-style: none">
+      <summary>
+        <h1>
+        {{- escapeXML ( index . 0 ).Target }} - Trivy Report
+        </h1><h2>Generated at: {{ now.Format "2006-01-02 15:04" }} (Asia/Bangkok)</h2>
+      </summary>
+    </ul>
+    
     
     <table>
     {{- range . }}
