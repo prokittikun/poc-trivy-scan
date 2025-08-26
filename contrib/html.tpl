@@ -52,7 +52,7 @@
       }
       a.toggle-more-links { cursor: pointer; }
     </style>
-    <title>{{- escapeXML ( index . 0 ).Target }} - Trivy Report - {{ now | time "Asia/Bangkok" }}</title>
+    <title>{{- escapeXML ( index . 0 ).Target }} - Trivy Report - {{ now }} </title>
     <script>
       window.onload = function() {
         document.querySelectorAll('td.links').forEach(function(linkCell) {
@@ -82,7 +82,7 @@
     </script>
   </head>
   <body>
-    <h1>{{- escapeXML ( index . 0 ).Target }} - Trivy Report - {{ now | time "Asia/Bangkok" }}</h1>
+    <h1>{{- escapeXML ( index . 0 ).Target }} - Trivy Report - {{ now }}</h1>
     <table>
     {{- range . }}
       <tr class="group-header"><th colspan="6">{{ .Type | toString | escapeXML }}</th></tr>

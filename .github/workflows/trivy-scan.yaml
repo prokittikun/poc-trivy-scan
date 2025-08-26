@@ -50,6 +50,11 @@ jobs:
         CONTENT="${CONTENT//$'\n'/'&nbsp;'}"
         CONTENT="${CONTENT//$'\r'/' '}"
         echo "html_output=$CONTENT" >> $GITHUB_OUTPUT
+    
+    - name: Convert UTC to ICT
+      run: |
+        REPORT_DATE=$(date -d "$(grep -oP '(?<=Trivy Report - ).*' trivy-results.html | head -1)" '+%Y-%m-%d %H:%M:%S ICT')
+        sed -i "s/Trivy Report - .*/Trivy Report - $REPORT_DATE/" trivy-results.html
 
     # Post as PR comment
     - name: Create or update PR comment
