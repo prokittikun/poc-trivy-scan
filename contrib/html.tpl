@@ -82,14 +82,13 @@
     </script>
   </head>
   <body>
-    <div>
-    <h1>
+    <span>
     {{- escapeXML ( index . 0 ).Target }} - Trivy Report
-    </h1>
-      <h2>
+    </span>
+    <br />
+    <span style="text-align:center;">
       Generated at: {{ now.Format "2006-01-02 15:04" }} (Asia/Bangkok)
-      </h2>
-    </div>
+    </span>
     
     <table>
     {{- range . }}
