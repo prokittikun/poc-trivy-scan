@@ -84,9 +84,11 @@
   <body>
     <h1>
     {{- escapeXML ( index . 0 ).Target }} - Trivy Report
-    <span style="text-align:center;">
-      Generated at: {{ now.Format "2006-01-02 15:04" }} (Asia/Bangkok)
-    </span>
+    <br>
+      <span style="text-align:center;">
+        Generated at: {{ now.Format "2006-01-02 15:04" }} (Asia/Bangkok)
+      </span>
+    </br>
     </h1>
     
     <table>
