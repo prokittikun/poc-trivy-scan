@@ -12,36 +12,72 @@ jobs:
       pull-requests: write
       issues: write
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Run vulnerable scanner lock file
-      uses: aquasecurity/trivy-action@0.28.0
-      with:
-        scan-type: 'fs'
-        scan-ref: 'pnpm-lock.yaml'
-        severity: 'HIGH,CRITICAL'
-        exit-code: '0'
-        # Scan for vulnerabilities in language-specific package managers
-        vuln-type: 'library'
-        # Do not report on vulnerabilities that do not have a fix yet
-        ignore-unfixed: true
-        # Display results in a table format in the logs
-        format: 'table'
-        output: 'trivy-results.txt'
-        # output: 'trivy-results.sarif'
-    - name: Post Trivy result as PR comment
-      uses: actions/github-script@v6
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const fs = require('fs');
-          const body = fs.readFileSync('trivy-results.txt', 'utf8'); 
-          github.rest.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: context.issue.number,
-            body: "### Trivy Scan Results\n" + "```\n" + body + "\n```"
-          });
+      - name: Run vulnerable scanner lock file
+        uses: aquasecurity/trivy-action@0.28.0
+        env:
+          TZ: Asia/Bangkok
+        with:
+          scan-type: "fs"
+          scan-ref: "pnpm-lock.yaml"
+          severity: "HIGH,CRITICAL"
+          exit-code: "0"
+          # Scan for vulnerabilities in language-specific package managers
+          vuln-type: "library"
+          # Do not report on vulnerabilities that do not have a fix yet
+          ignore-unfixed: true
+          # Display results in a table format in the logs
+          format: "template"
+          template: "@.github/tpl/test.tpl"
+          output: "trivy-results.html"
+          # output: 'trivy-results.sarif'
+      - name: Upload scan result
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-results
+          path: trivy-results.html
+
+      - name: Read HTML report
+        id: read_html
+        run: |
+          perl -0777 -pe 's|<head>.*?</head>|<head></head>|is' trivy-results.html > cleaned.html
+          mv cleaned.html trivy-results.html
+          CONTENT=$(cat trivy-results.html)
+          # escape % and newlines for GitHub output
+          CONTENT="${CONTENT//'%'/' '}"
+          CONTENT="${CONTENT//$'\n'/'&nbsp;'}"
+          CONTENT="${CONTENT//$'\r'/' '}"
+          echo "html_output=$CONTENT" >> $GITHUB_OUTPUT
+
+      - name: Delete old scanner comments
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            for (const comment of comments) {
+              if (comment.body.includes("<!--trivy-report-->")
+              ) {
+                await github.rest.issues.deleteComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: comment.id,
+                });
+                core.info(`Deleted comment id: ${comment.id}`);
+              }
+            }
+      # Post as PR comment
+      - name: Create or update PR comment
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: ${{ steps.read_html.outputs.html_output }}
