@@ -52,7 +52,6 @@ jobs:
         CONTENT="${CONTENT//$'\n'/'&nbsp;'}"
         CONTENT="${CONTENT//$'\r'/' '}"
         echo "html_output=$CONTENT" >> $GITHUB_OUTPUT
-
     # Post as PR comment
     - name: Create or update PR comment
       uses: peter-evans/create-or-update-comment@v3
