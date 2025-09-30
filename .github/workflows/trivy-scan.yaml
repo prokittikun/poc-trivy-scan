@@ -58,5 +58,7 @@ jobs:
       uses: peter-evans/create-or-update-comment@v3
       with:
         issue-number: ${{ github.event.pull_request.number }}
-        body: ${{ steps.read_html.outputs.html_output }}
+        body: |
+          ### Trivy Security Scan Report
+          ${{ steps.read_html.outputs.html_output }}
     
