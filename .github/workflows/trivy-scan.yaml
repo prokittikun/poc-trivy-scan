@@ -53,7 +53,7 @@ jobs:
           CONTENT="${CONTENT//$'\r'/' '}"
           echo "html_output=$CONTENT" >> $GITHUB_OUTPUT
 
-          
+
       - name: Delete old scanner comments
         uses: actions/github-script@v7
         with:
@@ -66,7 +66,7 @@ jobs:
             });
 
             for (const comment of comments) {
-              if (comment.body.includes("Trivy Security Scan Report")
+              if (comment.body.includes("Trivy Report ")
               ) {
                 await github.rest.issues.deleteComment({
                   owner: context.repo.owner,
@@ -82,6 +82,4 @@ jobs:
         uses: peter-evans/create-or-update-comment@v3
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ### Trivy Security Scan Report
-            ${{ steps.read_html.outputs.html_output }}
+          body: ${{ steps.read_html.outputs.html_output }}
