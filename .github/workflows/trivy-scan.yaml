@@ -65,7 +65,7 @@ jobs:
             });
 
             for (const comment of comments) {
-              if (comment.body.includes("Trivy Report ")
+              if (comment.body.includes("<!--trivy-report-->")
               ) {
                 await github.rest.issues.deleteComment({
                   owner: context.repo.owner,

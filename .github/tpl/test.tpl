@@ -1,3 +1,4 @@
+<!--trivy-report-->
 <!DOCTYPE html>
 <html>
   <head>
